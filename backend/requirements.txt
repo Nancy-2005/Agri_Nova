@@ -10,3 +10,4 @@ google-generativeai
 python-dotenv
 uharfbuzz
 groq
+deep-translator==1.11.4

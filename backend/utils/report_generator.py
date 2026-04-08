@@ -174,10 +174,15 @@ class PDFReportGenerator:
         # Try to find part matches or full matches
         res = mapping.get(name)
         if not res:
-            # Split and try components
-            parts = str(name).split()
-            res_parts = [mapping.get(p, p) for p in parts]
-            res = " ".join(res_parts)
+            try:
+                from deep_translator import GoogleTranslator
+                res = GoogleTranslator(source='en', target='ta').translate(str(name))
+            except Exception as e:
+                logger.error(f"Translation failed for {name}: {e}")
+                # Split and try components
+                parts = str(name).split()
+                res_parts = [mapping.get(p, p) for p in parts]
+                res = " ".join(res_parts)
         return res
 
     def vt(self, value, lang):
@@ -203,6 +208,13 @@ class PDFReportGenerator:
                     lookup = v
                     break
         
+        if not lookup and lang == 'ta':
+            try:
+                from deep_translator import GoogleTranslator
+                lookup = GoogleTranslator(source='en', target='ta').translate(str(value))
+            except Exception as e:
+                logger.error(f"Translation failed for {value}: {e}")
+
         res = lookup or str(value)
         # Handle income ranges or other long strings
         if "₹" in str(res):
@@ -254,6 +266,14 @@ class PDFReportGenerator:
         # Choose base font and fallback
         if lang == 'ta' and has_noto:
             base_font = "NotoSansTamil"
+            # Add English fallback for English characters in Tamil report
+            try:
+                arial_path = os.path.join(os.environ.get('WINDIR', 'C:\\Windows'), 'Fonts', 'arial.ttf')
+                if os.path.exists(arial_path):
+                    pdf.add_font("ArialFallback", style="", fname=arial_path)
+                    pdf.set_fallback_fonts(["ArialFallback"])
+            except Exception as e:
+                logging.error(f"Failed to load fallback font: {e}")
         else:
             # For English, use built-in Helvetica
             base_font = "Helvetica"
@@ -303,7 +323,10 @@ class PDFReportGenerator:
 
         # Quick Overview
         set_body()
-        name = user_data.get('name') or self.t('na', lang)
+        display_name_header = user_data.get('name')
+        if lang == 'ta' and display_name_header:
+            display_name_header = self.transliterate_name(display_name_header)
+        name = display_name_header or self.t('na', lang)
         district = self.resolve_district(user_data.get('district'), lang) or self.t('na', lang)
         pdf.cell(pw/2, 6, f"{self.t('farmer', lang)}: {name}")
         pdf.cell(pw/2, 6, f"{self.t('district', lang)}: {district}", ln=1)
