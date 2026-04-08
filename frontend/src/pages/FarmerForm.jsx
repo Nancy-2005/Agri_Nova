@@ -15,117 +15,90 @@ const FarmerForm = ({ user }) => {
     const [error, setError] = useState('');
 
     const [formData, setFormData] = useState({
-        // Step 1: Basic Profile
-        age: '',
-        gender: '',
-        education: '',
-        experience: '',
-        income: '',
-
-        // Step 2: Land & Crop
-        land_area: '',
-        crops: [],
-        soil_type: '',
-        water_availability: '',
-        irrigation_type: '',
-        season: '',
-        yield_history: '',
-        n_ratio: '',
-        p_ratio: '',
-        k_ratio: '',
-        ph_level: '',
-
-        // Step 3: Technology Usage
-        technologies_used: [],
-        other_technology: '',
-
-        // Step 4: Scheme Awareness
-        schemes_aware: [],
-        other_scheme: '',
-        risk_tolerance: 'Medium',
-        tn_micro_irrigation_aware: false,
-        tn_free_electricity_aware: false,
-        kalaignar_scheme_aware: false,
-        tn_soil_health_aware: false,
-        tn_farm_mechanization_aware: false,
-
-        // Step 5: Financial Behaviour
-        has_loan: false,
-        has_insurance: false,
-        savings_habit: '',
-        risk_level: '',
-
-        // Step 6: Tech Attitude
-        openness: 3,
-        trust: 3,
-        peer_influence: 3,
-        govt_influence: 3,
-
-        // Step 7: Region & Social
-        block: '',
-        taluk: '',
-        village: '',
-        agro_climatic_zone: '',
-        farmer_category: '',
-        farmer_smart_card: false,
-
-        // Step 8: Water & Energy
-        borewell_depth: '',
-        water_scarcity_months: '',
-        three_phase_power: false,
-        power_hours_per_day: '',
-
-        // Step 9: Market & Training
-        selling_uzhavar_sandhai: false,
-        using_enam: false,
-        market_type: '',
-        attended_training: false,
-        met_vao_aeo: false,
-        visited_tnau_farm: false,
-        read_tamil: false,
-        read_english: false,
-        voice_guidance_pref: false,
-        using_uzhavan_app: false,
-        watch_agri_youtube: false,
-        in_whatsapp_groups: false,
-
-        // Other details
-        other_education: '',
-        other_crops: '',
-        other_soil_type: '',
-        other_irrigation_source: '',
-        other_water_availability: '',
-        other_yield_history: '',
-        other_savings_habit: '',
-        other_risk_level: '',
-        other_agro_climatic_zone: '',
-        other_farmer_category: '',
-        other_market_type: '',
-        other_gender: '',
-
-        // Extended Financial & Risk Behaviour
-        loan_source: '',
-        repay_on_time: false,
-        enrolled_pmfby: false,
-        crop_loss_earlier: false,
-        farming_only_income: false,
-        has_other_income: false,
-        save_after_harvest: false,
-        saving_location: '',
-        invested_equipment: false,
-        digital_payment_usage: false,
-        check_market_price: false,
-        risk_try_new_methods: 3,
-        risk_afraid_loss: 3,
-        risk_follow_neighbors: 3,
-
-        // Insurance Details
-        insuranceEnrolled: '',
-        insuranceScheme: '',
-        insuranceClaim: '',
-        insuredLandPercent: '',
-        farmingRisk: ''
+        // ... (existing formData structure remains the same)
+        age: '', gender: '', education: '', experience: '', income: '',
+        land_area: '', crops: [], soil_type: '', water_availability: '',
+        irrigation_type: '', season: '', yield_history: '',
+        n_ratio: '', p_ratio: '', k_ratio: '', ph_level: '',
+        technologies_used: [], other_technology: '',
+        schemes_aware: [], other_scheme: '', risk_tolerance: 'Medium',
+        tn_micro_irrigation_aware: false, tn_free_electricity_aware: false,
+        kalaignar_scheme_aware: false, tn_soil_health_aware: false,
+        tn_farm_mechanization_aware: false, has_loan: false,
+        has_insurance: false, savings_habit: '', risk_level: '',
+        openness: 3, trust: 3, peer_influence: 3, govt_influence: 3,
+        block: '', taluk: '', village: '', agro_climatic_zone: '',
+        farmer_category: '', farmer_smart_card: false,
+        borewell_depth: '', water_scarcity_months: '',
+        three_phase_power: false, power_hours_per_day: '',
+        selling_uzhavar_sandhai: false, using_enam: false,
+        market_type: '', attended_training: false, met_vao_aeo: false,
+        visited_tnau_farm: false, read_tamil: false, read_english: false,
+        voice_guidance_pref: false, using_uzhavan_app: false,
+        watch_agri_youtube: false, in_whatsapp_groups: false,
+        other_education: '', other_crops: '', other_soil_type: '',
+        other_irrigation_source: '', other_water_availability: '',
+        other_yield_history: '', other_savings_habit: '', other_risk_level: '',
+        other_agro_climatic_zone: '', other_farmer_category: '',
+        other_market_type: '', other_gender: '', loan_source: '',
+        repay_on_time: false, enrolled_pmfby: false, crop_loss_earlier: false,
+        farming_only_income: false, has_other_income: false,
+        save_after_harvest: false, saving_location: '', invested_equipment: false,
+        digital_payment_usage: false, check_market_price: false,
+        risk_try_new_methods: 3, risk_afraid_loss: 3, risk_follow_neighbors: 3,
+        insuranceEnrolled: '', insuranceScheme: '', insuranceClaim: '',
+        insuredLandPercent: '', farmingRisk: ''
     });
+
+    useEffect(() => {
+        if (user) {
+            fetchExistingData();
+        }
+    }, [user]);
+
+    const fetchExistingData = async () => {
+        try {
+            const response = await farmerAPI.getProfile(user.user_id);
+            if (response.data && response.data.farmer_data) {
+                const data = response.data.farmer_data;
+                // Parse strings back to arrays if needed
+                setFormData(prev => ({
+                    ...prev,
+                    ...data,
+                    crops: Array.isArray(data.crop_type) ? data.crop_type : (data.crop_type ? data.crop_type.split(',') : []),
+                    technologies_used: Array.isArray(data.technologies_used) ? data.technologies_used : (data.technologies_used ? data.technologies_used.split(',') : []),
+                    schemes_aware: Array.isArray(data.schemes_aware) ? data.schemes_aware : (data.schemes_aware ? data.schemes_aware.split(',') : []),
+                    // Convert boolean-like integers
+                    has_loan: !!data.has_loan,
+                    has_insurance: !!data.has_insurance,
+                    repay_on_time: !!data.repay_on_time,
+                    enrolled_pmfby: !!data.enrolled_pmfby,
+                    crop_loss_earlier: !!data.crop_loss_earlier,
+                    farming_only_income: !!data.farming_only_income,
+                    has_other_income: !!data.has_other_income,
+                    save_after_harvest: !!data.save_after_harvest,
+                    invested_equipment: !!data.invested_equipment,
+                    digital_payment_usage: !!data.digital_payment_usage,
+                    check_market_price: !!data.check_market_price,
+                    farmer_smart_card: !!data.farmer_smart_card,
+                    three_phase_power: !!data.three_phase_power,
+                    selling_uzhavar_sandhai: !!data.selling_uzhavar_sandhai,
+                    using_enam: !!data.using_enam,
+                    attended_training: !!data.attended_training,
+                    met_vao_aeo: !!data.met_vao_aeo,
+                    visited_tnau_farm: !!data.visited_tnau_farm,
+                    read_tamil: !!data.read_tamil,
+                    read_english: !!data.read_english,
+                    voice_guidance_pref: !!data.voice_guidance_pref,
+                    using_uzhavan_app: !!data.using_uzhavan_app,
+                    watch_agri_youtube: !!data.watch_agri_youtube,
+                    in_whatsapp_groups: !!data.in_whatsapp_groups,
+                }));
+            }
+        } catch (error) {
+            console.log("No existing profile found or error fetching:", error);
+        }
+    };
 
     useEffect(() => {
         const willingness = parseInt(formData.risk_try_new_methods) || 3;

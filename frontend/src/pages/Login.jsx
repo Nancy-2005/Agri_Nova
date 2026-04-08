@@ -69,16 +69,16 @@ const Login = ({ setUser }) => {
                     <div>
                         <label className="block text-lg font-semibold text-gray-700 mb-2">
                             <FaPhone className="inline mr-2" />
-                            {t('mobileNumber')}
+                            {t('loginEmailMobile')}
                         </label>
                         <input
-                            type="tel"
+                            type="text"
                             name="phone_number"
                             value={formData.phone_number}
                             onChange={handleChange}
                             className="input-field"
                             required
-                            placeholder="9876543210"
+                            placeholder="Email / 9876543210"
                         />
                     </div>
 
@@ -116,12 +116,17 @@ const Login = ({ setUser }) => {
                     </button>
                 </form>
 
-                <div className="mt-6 text-center">
+                <div className="mt-6 text-center space-y-3">
                     <p className="text-gray-600">
-                        {t('dontHaveAccount')}{' '}
-                        <Link to="/register" className="text-farm-green-600 font-semibold hover:underline">
-                            {t('register')}
-                        </Link>
+                        {t('dontHaveAccount')}
+                        <div className="flex flex-col gap-2 mt-2">
+                            <Link to="/register" className="text-farm-green-600 font-semibold hover:underline">
+                                {t('registerWithPhone')}
+                            </Link>
+                            <Link to="/register-email" className="text-farm-green-600 font-semibold hover:underline">
+                                {t('registerWithEmail')}
+                            </Link>
+                        </div>
                     </p>
                 </div>
             </div>

@@ -187,6 +187,14 @@ const Dashboard = ({ user, onLogout }) => {
         return 'badge-low';
     };
 
+    // Strip Tamil part from bilingual strings like "English text - தமிழ் உரை"
+    const stripTamil = (text) => {
+        if (!text || language === 'ta') return text;
+        // Split on ' - ' and return only the first (English) part
+        const parts = text.split(' - ');
+        return parts[0].trim();
+    };
+
     const getAIInsights = () => {
         const insights = [];
         const techs = farmerData?.technologies_used || [];
@@ -403,20 +411,20 @@ const Dashboard = ({ user, onLogout }) => {
                                     }`}>
                                     {recommendations?.insurance
                                         ? (language === 'ta' ? recommendations.insurance.status_ta : recommendations.insurance.status_en)
-                                        : (farmerData?.insuranceEnrolled || (language === 'ta' ? 'காப்பீடு இல்லை' : 'Not Enrolled'))}
+                                        : (stripTamil(farmerData?.insuranceEnrolled) || (language === 'ta' ? 'காப்பீடு இல்லை' : 'Not Enrolled'))}
                                 </p>
                             </div>
                             <div>
                                 <p className="text-sm text-gray-500 font-bold uppercase">{language === 'ta' ? 'மிகப்பெரிய ஆபத்து' : 'Biggest Risk'}</p>
-                                <p className="text-lg font-semibold">{farmerData?.farmingRisk || 'N/A'}</p>
+                                <p className="text-lg font-semibold">{stripTamil(farmerData?.farmingRisk) || 'N/A'}</p>
                             </div>
                             <div>
                                 <p className="text-sm text-gray-500 font-bold uppercase">{language === 'ta' ? 'காப்பீடு நிலம்' : 'Insured Land %'}</p>
-                                <p className="text-lg font-semibold">{farmerData?.insuredLandPercent || '0%'}</p>
+                                <p className="text-lg font-semibold">{stripTamil(farmerData?.insuredLandPercent) || '0%'}</p>
                             </div>
                             <div>
                                 <p className="text-sm text-gray-500 font-bold uppercase">{language === 'ta' ? 'திட்டம்' : 'Current Scheme'}</p>
-                                <p className="text-lg font-semibold">{farmerData?.insuranceScheme || 'N/A'}</p>
+                                <p className="text-lg font-semibold">{stripTamil(farmerData?.insuranceScheme) || 'N/A'}</p>
                             </div>
                         </div>
 

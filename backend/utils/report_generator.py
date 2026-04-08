@@ -236,27 +236,33 @@ class PDFReportGenerator:
         pw = pdf.epw
         
         # Setup fonts
-        free_sans_path = "/usr/share/fonts/truetype/freefont/FreeSans.ttf"
-        pdf.add_font("FreeSans", style="", fname=free_sans_path)
-        pdf.add_font("FreeSans", style="B", fname=free_sans_path)
-        pdf.add_font("FreeSans", style="I", fname=free_sans_path)
+        # Avoid hardcoded Linux paths. Use bundled NotoSans font or built-in Helvetica
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        local_noto_path = os.path.normpath(os.path.join(current_dir, "..", "NotoSansTamil-Regular.ttf"))
         
-        if lang == 'ta' and self.tamil_font_registered:
-            pdf.add_font("NotoSansTamil", style="", fname=self.font_path)
-            pdf.add_font("NotoSansTamil", style="B", fname=self.font_path)
-            pdf.add_font("NotoSansTamil", style="I", fname=self.font_path)
-            # Use NotoSansTamil as main, FreeSans as fallback
+        # Register NotoSansTamil if it exists
+        has_noto = False
+        if os.path.exists(local_noto_path):
+            try:
+                pdf.add_font("NotoSansTamil", style="", fname=local_noto_path)
+                pdf.add_font("NotoSansTamil", style="B", fname=local_noto_path)
+                pdf.add_font("NotoSansTamil", style="I", fname=local_noto_path)
+                has_noto = True
+            except Exception as e:
+                logging.error(f"Failed to register NotoSansTamil font: {e}")
+
+        # Choose base font and fallback
+        if lang == 'ta' and has_noto:
             base_font = "NotoSansTamil"
-            pdf.set_fallback_fonts(["FreeSans"])
         else:
-            # Main font is FreeSans (supports both English and Tamil adequately)
-            # but we still want NotoSansTamil for better Tamil if available.
-            base_font = "FreeSans"
-            if self.tamil_font_registered:
-                pdf.add_font("NotoSansTamil", style="", fname=self.font_path)
-                pdf.add_font("NotoSansTamil", style="B", fname=self.font_path)
-                pdf.add_font("NotoSansTamil", style="I", fname=self.font_path)
-                pdf.set_fallback_fonts(["NotoSansTamil"])
+            # For English, use built-in Helvetica
+            base_font = "Helvetica"
+            # If we have Tamil font, set it as fallback for any Tamil names in English report
+            if has_noto:
+                try:
+                    pdf.set_fallback_fonts(["NotoSansTamil"])
+                except:
+                    pass
             
         def set_title():
             pdf.set_font(base_font, 'B', 18)

@@ -46,7 +46,11 @@ const Register = ({ setUser }) => {
             setSuccess(t('otpSentSuccessfully'));
             setStep(2);
         } catch (err) {
-            setError(err.response?.data?.error || 'Failed to send OTP');
+            const errorMsg = err.response?.data?.error || 'Failed to send OTP';
+            setError(errorMsg);
+            if (errorMsg.includes('already exists') || errorMsg.includes('ஏற்கனவே உள்ளார்')) {
+                alert(errorMsg);
+            }
         } finally {
             setLoading(false);
         }
@@ -90,7 +94,11 @@ const Register = ({ setUser }) => {
             setUser(response.data);
             navigate('/form');
         } catch (err) {
-            setError(err.response?.data?.error || 'Registration failed');
+            const errorMsg = err.response?.data?.error || 'Registration failed';
+            setError(errorMsg);
+            if (errorMsg.includes('already exists') || errorMsg.includes('ஏற்கனவே உள்ளார்')) {
+                alert(errorMsg);
+            }
         } finally {
             setLoading(false);
         }
@@ -113,7 +121,7 @@ const Register = ({ setUser }) => {
                         <FaTractor />
                     </div>
                     <h2 className="text-2xl font-bold text-farm-green-800">
-                        {t('register')} - Step {step} of 3
+                        {t('register')} - {step === 1 ? t('step1of3') : step === 2 ? t('step2of3') : t('step3of3')}
                     </h2>
                 </div>
 
@@ -297,7 +305,13 @@ const Register = ({ setUser }) => {
                     </form>
                 )}
 
-                <div className="mt-6 text-center">
+                <div className="mt-6 text-center space-y-2">
+                    <p className="text-gray-600">
+                        {t('registerWithEmail')}{' '}
+                        <Link to="/register-email" className="text-farm-green-600 font-semibold hover:underline">
+                            {t('register')}
+                        </Link>
+                    </p>
                     <p className="text-gray-600">
                         {t('alreadyHaveAccount')}{' '}
                         <Link to="/login" className="text-farm-green-600 font-semibold hover:underline">

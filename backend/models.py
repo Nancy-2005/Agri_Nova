@@ -24,9 +24,11 @@ def init_db():
         CREATE TABLE IF NOT EXISTS users (
             user_id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
-            phone_number TEXT UNIQUE NOT NULL,
+            phone_number TEXT UNIQUE,
+            email TEXT UNIQUE,
             password_hash TEXT NOT NULL,
             district TEXT NOT NULL,
+            is_verified INTEGER DEFAULT 0,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ''')
@@ -35,7 +37,8 @@ def init_db():
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS otp (
             otp_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            phone_number TEXT NOT NULL,
+            phone_number TEXT,
+            email TEXT,
             otp_code TEXT NOT NULL,
             name TEXT,
             district TEXT,
@@ -226,7 +229,7 @@ def init_db():
 
 class User:
     @staticmethod
-    def create(name, phone_number, password, district):
+    def create(name, password, district, phone_number=None, email=None, is_verified=0):
         """Create new user"""
         conn = get_db()
         cursor = conn.cursor()
@@ -234,9 +237,9 @@ class User:
         
         try:
             cursor.execute('''
-                INSERT INTO users (name, phone_number, password_hash, district)
-                VALUES (?, ?, ?, ?)
-            ''', (name, phone_number, password_hash, district))
+                INSERT INTO users (name, phone_number, email, password_hash, district, is_verified)
+                VALUES (?, ?, ?, ?, ?, ?)
+            ''', (name, phone_number, email, password_hash, district, is_verified))
             conn.commit()
             user_id = cursor.lastrowid
             conn.close()
@@ -246,11 +249,14 @@ class User:
             return None
     
     @staticmethod
-    def authenticate(phone_number, password):
-        """Authenticate user"""
+    def authenticate(identifier, password):
+        """Authenticate user (by email or phone)"""
         conn = get_db()
         cursor = conn.cursor()
-        cursor.execute('SELECT * FROM users WHERE phone_number = ?', (phone_number,))
+        cursor.execute('''
+            SELECT * FROM users 
+            WHERE phone_number = ? OR email = ?
+        ''', (identifier, identifier))
         user = cursor.fetchone()
         conn.close()
         
@@ -270,7 +276,7 @@ class User:
 
 class OTPModel:
     @staticmethod
-    def create(phone_number, otp_code, name=None, district=None, ttl_minutes=5):
+    def create(otp_code, phone_number=None, email=None, name=None, district=None, ttl_minutes=5):
         """Create a new OTP entry in the database"""
         conn = get_db()
         cursor = conn.cursor()
@@ -281,16 +287,17 @@ class OTPModel:
         expires_at = now + datetime.timedelta(minutes=ttl_minutes)
         
         cursor.execute('''
-            INSERT INTO otp (phone_number, otp_code, name, district, attempts, created_at, expires_at)
-            VALUES (?, ?, ?, ?, 0, ?, ?)
-        ''', (phone_number, str(otp_code), name, district, now.strftime('%Y-%m-%d %H:%M:%S'), expires_at.strftime('%Y-%m-%d %H:%M:%S')))
+            INSERT INTO otp (phone_number, email, otp_code, name, district, attempts, created_at, expires_at)
+            VALUES (?, ?, ?, ?, ?, 0, ?, ?)
+        ''', (phone_number, email, str(otp_code), name, district, now.strftime('%Y-%m-%d %H:%M:%S'), expires_at.strftime('%Y-%m-%d %H:%M:%S')))
         
         conn.commit()
         conn.close()
-        print(f"OTP stored in DB for {phone_number}", flush=True)
+        identifier = phone_number or email
+        print(f"OTP stored in DB for {identifier}", flush=True)
         
     @staticmethod
-    def verify(phone_number, otp_code):
+    def verify(otp_code, phone_number=None, email=None):
         """Verify an OTP and check if expired"""
         conn = get_db()
         cursor = conn.cursor()
@@ -299,11 +306,18 @@ class OTPModel:
         now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         
         # Find latest unexpired matching OTP with attempts < 3
-        cursor.execute('''
-            SELECT * FROM otp 
-            WHERE phone_number = ? AND expires_at > ?
-            ORDER BY created_at DESC LIMIT 1
-        ''', (phone_number, now))
+        if phone_number:
+            cursor.execute('''
+                SELECT * FROM otp 
+                WHERE phone_number = ? AND expires_at > ?
+                ORDER BY created_at DESC LIMIT 1
+            ''', (phone_number, now))
+        else:
+            cursor.execute('''
+                SELECT * FROM otp 
+                WHERE email = ? AND expires_at > ?
+                ORDER BY created_at DESC LIMIT 1
+            ''', (email, now))
         
         result = cursor.fetchone()
         

@@ -6,9 +6,11 @@ import { authAPI } from './utils/api';
 // Pages
 import Login from './pages/Login';
 import Register from './pages/Register';
+import RegisterEmail from './pages/RegisterEmail';
 import FarmerForm from './pages/FarmerForm';
 import Dashboard from './pages/Dashboard';
 import FarmSimulation from './pages/FarmSimulation';
+import GuidanceModal from './components/GuidanceModal';
 
 // Icons
 import { FaSignOutAlt } from 'react-icons/fa';
@@ -17,10 +19,18 @@ function App() {
     const { language, toggleLanguage, t } = useLanguage();
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [showGuidance, setShowGuidance] = useState(false);
+    const [guidanceLevel, setGuidanceLevel] = useState('');
 
     useEffect(() => {
         checkSession();
     }, []);
+
+    useEffect(() => {
+        if (user) {
+            checkGuidance();
+        }
+    }, [user]);
 
     const checkSession = async () => {
         try {
@@ -32,6 +42,27 @@ function App() {
             console.error('Session check failed:', error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const checkGuidance = async () => {
+        try {
+            const response = await authAPI.getGuidance();
+            if (response.data.show) {
+                setGuidanceLevel(response.data.level);
+                setShowGuidance(true);
+            }
+        } catch (error) {
+            console.error('Failed to fetch guidance:', error);
+        }
+    };
+
+    const handleCloseGuidance = async () => {
+        setShowGuidance(false);
+        try {
+            await authAPI.markGuidanceShown();
+        } catch (error) {
+            console.error('Failed to mark guidance as shown:', error);
         }
     };
 
@@ -55,6 +86,13 @@ function App() {
     return (
         <BrowserRouter>
             <div className="min-h-screen">
+                {/* Guidance Modal */}
+                <GuidanceModal 
+                    isOpen={showGuidance} 
+                    onClose={handleCloseGuidance} 
+                    level={guidanceLevel} 
+                />
+
                 {/* Top Right Controls - Language & Logout */}
                 <div className="fixed top-4 right-4 z-50 flex items-center bg-white shadow-lg rounded-full px-4 py-2 border border-gray-100">
                     {user && (
@@ -92,6 +130,10 @@ function App() {
                     <Route
                         path="/register"
                         element={user ? <Navigate to="/dashboard" /> : <Register setUser={setUser} />}
+                    />
+                    <Route
+                        path="/register-email"
+                        element={user ? <Navigate to="/dashboard" /> : <RegisterEmail setUser={setUser} />}
                     />
                     <Route
                         path="/form"

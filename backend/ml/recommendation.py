@@ -118,14 +118,24 @@ def _safe_income(val, default=200000):
     if not val:
         return float(default)
     s = str(val).strip()
-    if "-" in s:
-        parts = s.split("-")
-        try:
-            lo = float(parts[0].replace(",", ""))
-            hi = float(parts[1].replace(",", ""))
-            return (lo + hi) / 2
-        except:
-            return float(default)
+    
+    # Handle "Above 500000" or "Below 50000"
+    import re
+    nums = re.findall(r'\d+', s.replace(',', ''))
+    if nums:
+        if "Above" in s:
+            return float(nums[0]) + 1  # Ensure it falls into the >= range
+        if "Below" in s:
+            return float(nums[0]) - 1  # Ensure it falls into the < range
+        if "-" in s:
+            try:
+                lo = float(nums[0])
+                hi = float(nums[1])
+                return (lo + hi) / 2
+            except:
+                pass
+        return float(nums[0])
+        
     try:
         return float(s.replace(",", ""))
     except:
@@ -145,15 +155,17 @@ from data.schemes import filter_schemes_by_eligibility
 
 def _calculate_adoption(farmer_data):
     """
-    Returns (level, score) where level ∈ {High, Moderate, Low}
+    Returns (level, score) where level ∈ {High, Medium, Low}
     Score is deterministic and directly reflects form inputs.
-    Total Raw Score Max = 105 (normalized to 100)
+    Total Raw Score Max = 135 (normalized to 100)
     """
     raw_score = 0
 
     # 1. Technology usage (max 40 pts) ─────────────────────────────────────────
     # Each technology = 8 points, capped at 5 technologies (5 * 8 = 40)
-    techs = _parse_list(farmer_data.get("technologies_used"))
+    techs_raw = _parse_list(farmer_data.get("technologies_used"))
+    # Filter out "None" or "Others"
+    techs = [t for t in techs_raw if str(t).lower() not in ["none", "others", "none - எதுவும் இல்லை", "எதுவும் இல்லை"]]
     tech_count = len(techs)
     raw_score += min(tech_count * 8, 40)
 
@@ -178,23 +190,33 @@ def _calculate_adoption(farmer_data):
     elif income >= 150000:  raw_score += 3
     else:                   raw_score += 1
 
-    # 5. Scheme awareness (max 5 pts) ───────────────────────────────────────────
-    # 1 point per scheme, max 5 schemes
+    # 5. Scheme awareness (max 10 pts) ───────────────────────────────────────────
+    # 2 points per scheme, max 5 schemes (for 10 pts)
     schemes = _parse_list(farmer_data.get("schemes_aware"))
-    raw_score += min(len(schemes) * 1, 5)
+    raw_score += min(len(schemes) * 2, 10)
 
-    # 6. Market participation (max 5 pts) ──────────────────────────────────────
-    if farmer_data.get("selling_uzhavar_sandhai"): raw_score += 2
-    if farmer_data.get("attended_training"):        raw_score += 2
-    if farmer_data.get("check_market_price"):       raw_score += 1
+    # 6. Market participation & Training (max 15 pts) ──────────────────────────
+    if farmer_data.get("selling_uzhavar_sandhai"): raw_score += 3
+    if farmer_data.get("attended_training"):        raw_score += 3
+    if farmer_data.get("check_market_price"):       raw_score += 3
+    if farmer_data.get("met_vao_aeo"):              raw_score += 3
+    if farmer_data.get("visited_tnau_farm"):        raw_score += 3
+    
+    # 7. Financial Safety (max 15 pts) ─────────────────────────────────────────
+    if farmer_data.get("has_insurance") or farmer_data.get("enrolled_pmfby"): 
+        raw_score += 5
+    if farmer_data.get("save_after_harvest"):
+        raw_score += 5
+    if farmer_data.get("invested_equipment"):
+        raw_score += 5
 
-    # ── Normalization (score / 105) * 100 ─────────────────────────────────────
-    score = int(round((raw_score / 105) * 100))
+    # ── Normalization (score / 135) * 100 ─────────────────────────────────────
+    score = int(round((raw_score / 135) * 100))
     score = min(score, 100)
 
     # ── Category (Synchronized with frontend) ─────────────────────────────────
-    if   score >= 70: level = "High"
-    elif score >= 40: level = "Moderate"
+    if   score >= 68: level = "High"
+    elif score >= 38: level = "Medium"
     else:             level = "Low"
 
     return level, score

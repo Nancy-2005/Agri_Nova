@@ -14,7 +14,7 @@ CENTRAL_SCHEMES = [
         "type": "Income Support",
         "type_ta": "வருமான ஆதரவு",
         "link": "https://pmkisan.gov.in/",
-        "adoption_level": ["Low", "Moderate", "High"]
+        "adoption_level": ["Low", "Medium", "High"]
     },
     {
         "id": "soil_health",
@@ -28,7 +28,7 @@ CENTRAL_SCHEMES = [
         "type": "Advisory",
         "type_ta": "ஆலோசனை",
         "link": "https://soilhealth.dac.gov.in/",
-        "adoption_level": ["Low", "Moderate", "High"]
+        "adoption_level": ["Low", "Medium", "High"]
     },
     {
         "id": "pmfby",
@@ -42,7 +42,7 @@ CENTRAL_SCHEMES = [
         "type": "Insurance",
         "type_ta": "காப்பீடு",
         "link": "https://pmfby.gov.in/",
-        "adoption_level": ["Low", "Moderate", "High"]
+        "adoption_level": ["Low", "Medium", "High"]
     },
     {
         "id": "kcc",
@@ -56,7 +56,7 @@ CENTRAL_SCHEMES = [
         "type": "Credit",
         "type_ta": "கடன்",
         "link": "https://www.myscheme.gov.in/schemes/kcc",
-        "adoption_level": ["Low", "Moderate", "High"]
+        "adoption_level": ["Low", "Medium", "High"]
     },
     {
         "id": "enam",
@@ -70,7 +70,7 @@ CENTRAL_SCHEMES = [
         "type": "Market Linkage",
         "type_ta": "சந்தை இணைப்பு",
         "link": "https://enam.gov.in/web/",
-        "adoption_level": ["Moderate", "High"]
+        "adoption_level": ["Medium", "High"]
     },
     {
         "id": "pmksy",
@@ -84,7 +84,7 @@ CENTRAL_SCHEMES = [
         "type": "Irrigation Subsidy",
         "type_ta": "பாசன மானியம்",
         "link": "https://pmksy.gov.in/",
-        "adoption_level": ["Moderate", "High"]
+        "adoption_level": ["Medium", "High"]
     },
     {
         "id": "pm_kusum",
@@ -98,7 +98,7 @@ CENTRAL_SCHEMES = [
         "type": "Energy",
         "type_ta": "ஆற்றல்",
         "link": "https://pmkusum.mnre.gov.in/",
-        "adoption_level": ["Moderate", "High"]
+        "adoption_level": ["Medium", "High"]
     },
     {
         "id": "aif",
@@ -126,7 +126,7 @@ CENTRAL_SCHEMES = [
         "type": "Pension",
         "type_ta": "ஓய்வூதியம்",
         "link": "https://pmkmy.gov.in/",
-        "adoption_level": ["Low", "Moderate", "High"]
+        "adoption_level": ["Low", "Medium", "High"]
     },
     {
         "id": "svamitva",
@@ -140,7 +140,7 @@ CENTRAL_SCHEMES = [
         "type": "Governance",
         "type_ta": "ஆளுமை",
         "link": "https://svamitva.nic.in/",
-        "adoption_level": ["Low", "Moderate"]
+        "adoption_level": ["Low", "Medium"]
     },
     {
         "id": "pkvy",
@@ -154,7 +154,7 @@ CENTRAL_SCHEMES = [
         "type": "Organic Farming",
         "type_ta": "இயற்கை விவசாயம்",
         "link": "https://pgsindia-ncof.dac.net.in/pkvy/index.aspx",
-        "adoption_level": ["Moderate", "High"]
+        "adoption_level": ["Medium", "High"]
     },
     {
         "id": "pm_pranam",
@@ -168,7 +168,7 @@ CENTRAL_SCHEMES = [
         "type": "Sustainable Agri",
         "type_ta": "நிலையான வேளாண்மை",
         "link": "https://fert.nic.in/pm-pranam",
-        "adoption_level": ["Low", "Moderate", "High"]
+        "adoption_level": ["Low", "Medium", "High"]
     }
 ]
 
@@ -186,7 +186,7 @@ TAMIL_NADU_SCHEMES = [
         "type": "Irrigation Subsidy",
         "type_ta": "பாசன மானியம்",
         "link": "https://tnhorticulture.tn.gov.in/horti/pminfo",
-        "adoption_level": ["Low", "Moderate", "High"]
+        "adoption_level": ["Low", "Medium", "High"]
     },
     {
         "id": "tn_farmers_security",
@@ -200,7 +200,7 @@ TAMIL_NADU_SCHEMES = [
         "type": "Social Security",
         "type_ta": "சமூக பாதுகாப்பு",
         "link": "https://tnagriculture.in",
-        "adoption_level": ["Low", "Moderate", "High"]
+        "adoption_level": ["Low", "Medium", "High"]
     },
     {
         "id": "tn_cm_health",
@@ -214,7 +214,7 @@ TAMIL_NADU_SCHEMES = [
         "type": "Health Insurance",
         "type_ta": "மருத்துவ காப்பீடு",
         "link": "https://www.cmchistn.com/",
-        "adoption_level": ["Low", "Moderate", "High"]
+        "adoption_level": ["Low", "Medium", "High"]
     },
     {
         "id": "tn_farm_mechanization",
@@ -228,7 +228,7 @@ TAMIL_NADU_SCHEMES = [
         "type": "Machinery",
         "type_ta": "இயந்திரங்கள்",
         "link": "https://aed.tn.gov.in/en/agricultural-mechanisation/",
-        "adoption_level": ["Moderate", "High"]
+        "adoption_level": ["Medium", "High"]
     },
     {
         "id": "kalaignar_scheme",
@@ -242,7 +242,7 @@ TAMIL_NADU_SCHEMES = [
         "type": "Integrated Dev",
         "type_ta": "ஒருங்கிணைந்த வளம்",
         "link": "https://www.tnagrisnet.tn.gov.in/",
-        "adoption_level": ["Low", "Moderate"]
+        "adoption_level": ["Low", "Medium"]
     },
     {
         "id": "tn_free_electricity",
@@ -256,7 +256,7 @@ TAMIL_NADU_SCHEMES = [
         "type": "Energy",
         "type_ta": "ஆற்றல்",
         "link": "https://www.tangedco.gov.in/",
-        "adoption_level": ["Low", "Moderate", "High"]
+        "adoption_level": ["Low", "Medium", "High"]
     },
     {
         "id": "tn_kudimaramathu",
@@ -270,7 +270,7 @@ TAMIL_NADU_SCHEMES = [
         "type": "Water Conservation",
         "type_ta": "நீர் பாதுகாப்பு",
         "link": "https://www.tndipr.gov.in/DIPR/en/kudimaramathu/",
-        "adoption_level": ["Low", "Moderate", "High"]
+        "adoption_level": ["Low", "Medium", "High"]
     },
     {
         "id": "tn_collective_farming",
@@ -284,7 +284,7 @@ TAMIL_NADU_SCHEMES = [
         "type": "FPO Support",
         "type_ta": "FPO ஆதரவு",
         "link": "https://tnagrisnet.tn.gov.in/",
-        "adoption_level": ["Moderate", "High"]
+        "adoption_level": ["Medium", "High"]
     },
     {
         "id": "tn_crop_diversification",
@@ -298,7 +298,7 @@ TAMIL_NADU_SCHEMES = [
         "type": "Diversification",
         "type_ta": "பயிர் மாற்றம்",
         "link": "https://tnagrisnet.tn.gov.in/",
-        "adoption_level": ["Low", "Moderate", "High"]
+        "adoption_level": ["Low", "Medium", "High"]
     }
 ]
 
@@ -316,7 +316,7 @@ WOMEN_SCHEMES = [
         "type": "Women Empowerment",
         "type_ta": "பெண்கள் அதிகாரமளித்தல்",
         "link": "https://aajeevika.gov.in/",
-        "adoption_level": ["Low", "Moderate", "High"]
+        "adoption_level": ["Low", "Medium", "High"]
     },
     {
         "id": "nabard_women",
@@ -330,7 +330,7 @@ WOMEN_SCHEMES = [
         "type": "Women Empowerment",
         "type_ta": "பெண்கள் அதிகாரமளித்தல்",
         "link": "https://www.nabard.org/content1.aspx?cid=506&id=23",
-        "adoption_level": ["Moderate", "High"]
+        "adoption_level": ["Medium", "High"]
     },
     {
         "id": "namo_drone_didi",
@@ -358,7 +358,7 @@ WOMEN_SCHEMES = [
         "type": "Subsidy",
         "type_ta": "மானியம்",
         "link": "https://tnagriculture.in",
-        "adoption_level": ["Low", "Moderate", "High"]
+        "adoption_level": ["Low", "Medium", "High"]
     }
 ]
 
@@ -376,7 +376,7 @@ DIGITAL_PLATFORMS = [
         "type": "Market",
         "type_ta": "சந்தை",
         "link": "https://www.tnmsc.com/uzhavar-santhai.php",
-        "adoption_level": ["Low", "Moderate", "High"]
+        "adoption_level": ["Low", "Medium", "High"]
     },
     {
         "id": "grains_portal",
@@ -390,7 +390,7 @@ DIGITAL_PLATFORMS = [
         "type": "Digital Service",
         "type_ta": "டிஜிட்டல் சேவை",
         "link": "https://grains.tn.gov.in/",
-        "adoption_level": ["Moderate", "High"]
+        "adoption_level": ["Medium", "High"]
     },
     {
         "id": "namma_arasu",
@@ -404,7 +404,7 @@ DIGITAL_PLATFORMS = [
         "type": "Information",
         "type_ta": "தகவல்",
         "link": "https://www.tn.gov.in/tnchatbot/",
-        "adoption_level": ["Low", "Moderate", "High"]
+        "adoption_level": ["Low", "Medium", "High"]
     },
     {
         "id": "uzhavan_app",
@@ -418,7 +418,7 @@ DIGITAL_PLATFORMS = [
         "type": "Digital Service",
         "type_ta": "டிஜிட்டல் சேவை",
         "link": "https://tnagrisnet.tn.gov.in/",
-        "adoption_level": ["Low", "Moderate", "High"]
+        "adoption_level": ["Low", "Medium", "High"]
     },
     {
         "id": "enam_app",
@@ -432,7 +432,7 @@ DIGITAL_PLATFORMS = [
         "type": "Market App",
         "type_ta": "சந்தை செயலி",
         "link": "https://enam.gov.in/web/",
-        "adoption_level": ["Moderate", "High"]
+        "adoption_level": ["Medium", "High"]
     },
     {
         "id": "tnau_portal",
@@ -446,7 +446,7 @@ DIGITAL_PLATFORMS = [
         "type": "Information Portal",
         "type_ta": "தகவல் தளம்",
         "link": "https://agritech.tnau.ac.in/",
-        "adoption_level": ["Low", "Moderate", "High"]
+        "adoption_level": ["Low", "Medium", "High"]
     },
     {
         "id": "agristack",
@@ -460,7 +460,7 @@ DIGITAL_PLATFORMS = [
         "type": "Digital Service",
         "type_ta": "டிஜிட்டல் சேவை",
         "link": "https://agristack.gov.in/",
-        "adoption_level": ["Moderate", "High"]
+        "adoption_level": ["Medium", "High"]
     },
     {
         "id": "enam",
@@ -474,7 +474,7 @@ DIGITAL_PLATFORMS = [
         "type": "Market Linkage",
         "type_ta": "சந்தை இணைப்பு",
         "link": "https://enam.gov.in/web/",
-        "adoption_level": ["Moderate", "High"]
+        "adoption_level": ["Medium", "High"]
     }
 ]
 
@@ -494,9 +494,9 @@ def filter_schemes_by_eligibility(farmer_data):
     scored_schemes = []
 
     # 1. Inputs Extraction
-    adoption_level = str(farmer_data.get('adoption_category', 'Moderate'))
+    adoption_level = str(farmer_data.get('adoption_category', 'Medium'))
     if 'High' in adoption_level: adoption_level = 'High'
-    elif 'Moderate' in adoption_level: adoption_level = 'Moderate'
+    elif 'Medium' in adoption_level or 'Moderate' in adoption_level: adoption_level = 'Medium'
     else: adoption_level = 'Low'
         
     gender = farmer_data.get('gender', 'Male')

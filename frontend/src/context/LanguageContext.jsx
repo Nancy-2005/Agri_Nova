@@ -58,6 +58,33 @@ export const translations = {
     verifyOtp: { en: 'Verify OTP', ta: 'OTP சரிபார்' },
     setPassword: { en: 'Set Password', ta: 'கடவுச்சொல் அமைக்கவும்' },
     confirmPassword: { en: 'Confirm Password', ta: 'கடவுச்சொல் உறுதிப்படுத்தவும்' },
+    loginEmailMobile: { en: 'Email / Mobile Number', ta: 'மின்னஞ்சல் / மொபைல் எண்' },
+    userAlreadyExists: { en: 'User already exists', ta: 'பயனர் ஏற்கனவே உள்ளார்' },
+    invalidOtp: { en: 'Invalid OTP', ta: 'தவறான OTP' },
+    registerWithEmail: { en: 'Register with Email', ta: 'மின்னஞ்சல் மூலம் பதிவு செய்யவும்' },
+    registerWithPhone: { en: 'Register with Phone', ta: 'தொலைபேசி மூலம் பதிவு செய்யவும்' },
+    loginWithEmailPhone: { en: 'Login with Email / Phone', ta: 'மின்னஞ்சல் / தொலைபேசி மூலம் உள்நுழைக' },
+    step1of3: { en: 'Step 1 of 3', ta: 'படி 1 (3-இல்)' },
+    step2of3: { en: 'Step 2 of 3', ta: 'படி 2 (3-இல்)' },
+    step3of3: { en: 'Step 3 of 3', ta: 'படி 3 (3-இல்)' },
+    
+    // Guidance Popup
+    guidanceTitle: { en: 'Guidance & Encouragement', ta: 'வழிகாட்டுதல் மற்றும் ஊக்கம்' },
+    currentLevel: { en: 'Your current adoption level is:', ta: 'உங்கள் தற்போதைய நிலை:' },
+    low: { en: 'Low', ta: 'குறைவு' },
+    medium: { en: 'Medium', ta: 'நடுத்தரம்' },
+    high: { en: 'High', ta: 'அதிகம்' },
+    guidanceMessage: { 
+        en: 'To improve your level, try the recommended actions and update your profile.', 
+        ta: 'உங்கள் நிலையை மேம்படுத்த, பரிந்துரைகளை முயற்சி செய்து பின்னர் உங்கள் விவரங்களை புதுப்பிக்கவும்' 
+    },
+    suggestedActions: { en: 'Suggested Actions:', ta: 'பரிந்துரைக்கப்பட்ட செயல்கள்:' },
+    cropRec: { en: 'Crop recommendations', ta: 'பயிர் பரிந்துரைகள்' },
+    govScheme: { en: 'Government scheme registration', ta: 'அரசு திட்ட பதிவு' },
+    techUsage: { en: 'Technology usage', ta: 'தொழில்நுட்ப பயன்பாடு' },
+    viewRec: { en: 'View Recommendations', ta: 'பரிந்துரைகள் பார்க்க' },
+    updateProfile: { en: 'Update Profile', ta: 'விவரங்களை புதுப்பிக்க' },
+    later: { en: 'Later', ta: 'பின்னர்' },
 
     // Dashboard
     dashboard: { en: 'Dashboard', ta: 'முகப்பு' },

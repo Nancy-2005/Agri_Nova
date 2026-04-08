@@ -1,11 +1,15 @@
 import pandas as pd
 import numpy as np
 import os
+import sys
 import joblib
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import accuracy_score
+
+# Add parent directory to sys.path to allow importing from 'data'
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from recommendation import recommendation_engine
 
 def train_model():

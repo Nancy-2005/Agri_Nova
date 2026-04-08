@@ -18,6 +18,8 @@ export const authAPI = {
     login: (data) => api.post('/login', data),
     logout: () => api.post('/logout'),
     checkSession: () => api.get('/check-session'),
+    getGuidance: () => api.get('/guidance'),
+    markGuidanceShown: () => api.post('/mark-guidance-shown'),
 };
 
 // Farmer APIs
