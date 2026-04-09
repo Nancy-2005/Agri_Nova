@@ -42,6 +42,11 @@ export const chatbotAPI = {
     sendMessage: (message, language) => api.post('/chat', { message, language }),
 };
 
+// Weather API
+export const weatherAPI = {
+    getWeather: (city) => api.get(`/weather${city ? `?city=${encodeURIComponent(city)}` : ''}`),
+};
+
 // Simulation API
 export const simulationAPI = {
     getData: (userId) => api.get(`/simulation/${userId}`),

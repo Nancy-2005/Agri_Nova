@@ -1,8 +1,10 @@
 from flask import Blueprint, jsonify, request, session
 from models import FarmerData
 import os
+import requests as http_requests
 from groq import Groq
 from dotenv import load_dotenv
+from datetime import datetime
 
 load_dotenv()
 
@@ -13,7 +15,108 @@ if groq_api_key:
 else:
     groq_client = None
 
+# OpenWeatherMap API key (set OPENWEATHER_API_KEY in your .env file)
+OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY", "")
+
 chatbot_bp = Blueprint('chatbot', __name__)
+
+
+# ── Weather helper ──────────────────────────────────────────────────────────
+WEATHER_ICON_MAP = {
+    range(200, 300): '⛈️',
+    range(300, 400): '🌦️',
+    range(500, 600): '🌧️',
+    range(600, 700): '❄️',
+    range(700, 800): '🌫️',
+    range(800, 801): '☀️',
+    range(801, 803): '⛅',
+    range(803, 900): '☁️',
+}
+
+
+def get_weather_emoji(code):
+    for r, emoji in WEATHER_ICON_MAP.items():
+        if code in r:
+            return emoji
+    return '🌤️'
+
+
+def get_farming_tip(condition_id, description):
+    desc = description.lower()
+    if condition_id >= 200 and condition_id < 300:
+        return '⚠️ Thunderstorm expected — stay indoors, do not operate farm machinery.'
+    if condition_id >= 500 and condition_id < 600:
+        return '🌧️ Rainy day — good time to rest. Avoid spraying pesticides or fertilizers.'
+    if condition_id == 800:
+        return '☀️ Clear sunny day — ideal for harvesting, spraying, and field work.'
+    if condition_id > 800:
+        return '⛅ Partly cloudy — good farming conditions. Mild temperature expected.'
+    if 'fog' in desc or 'mist' in desc or 'haze' in desc:
+        return '🌫️ Low visibility today — take care during transport and field operations.'
+    return '🌱 Check local conditions before planning major farm activities today.'
+
+
+def fetch_weather_data(city):
+    """Fetch current weather + 5-day forecast from OpenWeatherMap."""
+    try:
+        # Current weather
+        curr_url = (
+            f"https://api.openweathermap.org/data/2.5/weather"
+            f"?q={city},IN&appid={OPENWEATHER_API_KEY}&units=metric"
+        )
+        curr_res = http_requests.get(curr_url, timeout=8)
+        if curr_res.status_code != 200:
+            return None
+        curr = curr_res.json()
+
+        condition_id = curr['weather'][0]['id']
+        current = {
+            'temp': round(curr['main']['temp']),
+            'feels_like': round(curr['main']['feels_like']),
+            'humidity': curr['main']['humidity'],
+            'wind_speed': round(curr['wind']['speed'] * 3.6, 1),  # m/s -> km/h
+            'condition': curr['weather'][0]['main'],
+            'description': curr['weather'][0]['description'].title(),
+            'icon': get_weather_emoji(condition_id),
+            'icon_code': condition_id,
+        }
+
+        # 5-day forecast (every 3 hours -> pick one entry per day at noon)
+        fore_url = (
+            f"https://api.openweathermap.org/data/2.5/forecast"
+            f"?q={city},IN&appid={OPENWEATHER_API_KEY}&units=metric&cnt=40"
+        )
+        fore_res = http_requests.get(fore_url, timeout=8)
+        forecast_days = []
+        if fore_res.status_code == 200:
+            items = fore_res.json().get('list', [])
+            seen_dates = set()
+            for item in items:
+                dt = datetime.utcfromtimestamp(item['dt'])
+                date_str = dt.strftime('%Y-%m-%d')
+                if date_str not in seen_dates and len(forecast_days) < 5:
+                    seen_dates.add(date_str)
+                    cid = item['weather'][0]['id']
+                    forecast_days.append({
+                        'date': date_str,
+                        'day': dt.strftime('%A'),
+                        'temp_min': round(item['main']['temp_min']),
+                        'temp_max': round(item['main']['temp_max']),
+                        'condition': item['weather'][0]['main'],
+                        'icon': get_weather_emoji(cid),
+                    })
+
+        tip = get_farming_tip(condition_id, curr['weather'][0]['description'])
+        return {
+            'city': curr.get('name', city),
+            'country': curr.get('sys', {}).get('country', 'IN'),
+            'current': current,
+            'forecast': forecast_days,
+            'farming_tip': tip,
+        }
+    except Exception as e:
+        print(f"Weather API error: {e}")
+        return None
 
 
 def require_login(f):
@@ -735,6 +838,76 @@ RESPONSES = {
             "உங்களுக்கு மட்டுமே ஏற்ற, நடைமுறைக்கு சாத்தியமான ஆலோசனைகளை வழங்குவதே இதன் நோக்கம்!"
         ),
     },
+    'simulation_benefits': {
+        'en': (
+            "🌟 **Benefits of AgriNova Farm Simulation:**\n"
+            "• **Risk-Free Experimentation** — Test new crops, irrigation, and tech virtually before committing money.\n"
+            "• **Personalised Score** — Your unique 19-feature profile gives you a custom Technology Adoption Score.\n"
+            "• **Targeted Schemes** — Instantly see which Govt schemes (PM-KISAN, PMFBY, KCC) match YOUR eligibility.\n"
+            "• **Smart Crop Picks** — AI recommends the most profitable crops for YOUR land, water, and soil type.\n"
+            "• **Technology Roadmap** — Learn which technologies (drip, IoT, drones) suit YOUR adoption level.\n"
+            "• **Saves Time & Money** — Avoid costly trial-and-error by simulating outcomes before investing."
+        ),
+        'ta': (
+            "🌟 **AgriNova பண்ணை சிமுலேஷனின் நன்மைகள்:**\n"
+            "• **ஆபத்தில்லா சோதனை** — பணம் செலவிடுவதற்கு முன் புதிய பயிர்கள், நீர்ப்பாசனம் மற்றும் தொழில்நுட்பங்களை மெய்நிகரில் சோதிக்கலாம்.\n"
+            "• **தனிப்பட்ட மதிப்பெண்** — உங்கள் 19 அம்ச சுயவிவரம் உங்களுக்கு தனிப்பட்ட தொழில்நுட்ப தத்தெடுப்பு மதிப்பெண்ணை வழங்குகிறது.\n"
+            "• **சரியான திட்டங்கள்** — உங்கள் தகுதிக்கு ஏற்ற அரசு திட்டங்களை உடனடியாக அறிந்துகொள்ளுங்கள்.\n"
+            "• **புத்திசாலி பயிர் தேர்வு** — AI உங்கள் நிலம், நீர் மற்றும் மண் வகைக்கு ஏற்ற லாபகரமான பயிர்களை பரிந்துரைக்கிறது.\n"
+            "• **தொழில்நுட்ப திட்டம்** — உங்கள் தத்தெடுப்பு நிலைக்கு ஏற்ற தொழில்நுட்பங்களை அறிந்துகொள்ளுங்கள்.\n"
+            "• **நேரம் & பணம் சேமிப்பு** — முதலீடு செய்வதற்கு முன் சிமுலேஷன் மூலம் முடிவுகளை அறிந்துகொண்டு தவறான சோதனைகளை தவிர்க்கலாம்."
+        ),
+    },
+    'simulation_how_to_use': {
+        'en': (
+            "📋 **How to Use Farm Simulation in AgriNova:**\n"
+            "**Step 1:** Go to the *Farmer Form* page and fill in your details:\n"
+            "  → Land size, soil type, water source, crop type, farming experience, etc.\n"
+            "**Step 2:** Submit the form. Our ML model instantly analyses your 19-feature profile.\n"
+            "**Step 3:** View your *Dashboard* to see:\n"
+            "  → Your Technology Adoption Score (%)\n"
+            "  → Adoption Category (High / Moderate / Low)\n"
+            "  → Personalised crop picks, technology tips & matching govt schemes\n"
+            "**Step 4:** Visit *Farm Simulation* to run custom what-if scenarios (e.g., 'If I switch to drip irrigation, will my score improve?')\n"
+            "**Tip:** Update your profile whenever your farm conditions change for fresh recommendations!"
+        ),
+        'ta': (
+            "📋 **AgriNova-ல் Farm Simulation பயன்படுத்துவது எப்படி:**\n"
+            "**படி 1:** *விவசாயி படிவம்* பக்கத்திற்கு சென்று உங்கள் விவரங்களை பதிவு செய்யுங்கள்:\n"
+            "  → நில அளவு, மண் வகை, நீர் ஆதாரம், பயிர் வகை, விவசாய அனுபவம் போன்றவை\n"
+            "**படி 2:** படிவத்தை சமர்ப்பிக்கவும். எங்கள் ML மாடல் உடனடியாக உங்கள் சுயவிவரத்தை பகுப்பாய்வு செய்யும்.\n"
+            "**படி 3:** *டாஷ்போர்டில்* பாருங்கள்:\n"
+            "  → தொழில்நுட்ப தத்தெடுப்பு மதிப்பெண் (%)\n"
+            "  → தகுதி நிலை (உயர் / நடுத்தர / குறைந்த)\n"
+            "  → பரிந்துரைக்கப்பட்ட பயிர்கள், தொழில்நுட்பங்கள் மற்றும் அரசு திட்டங்கள்\n"
+            "**படி 4:** *Farm Simulation* பக்கத்திற்கு சென்று தனிப்பட்ட சோதனைகளை இயக்குங்கள்\n"
+            "**குறிப்பு:** உங்கள் பண்ணை நிலைகள் மாறும் போது சுயவிவரத்தை புதுப்பிக்கவும்!"
+        ),
+    },
+    'agrinova_features': {
+        'en': (
+            "✨ **AgriNova Key Features:**\n"
+            "• 🤖 **ML-Powered Score** — Technology Adoption Score using Random Forest + K-Means clustering\n"
+            "• 🌾 **Crop Recommendations** — Personalised profitable crop suggestions based on your profile\n"
+            "• 🏛️ **Scheme Matching** — Automatically find eligible govt schemes (PM-KISAN, PMFBY, KCC, etc.)\n"
+            "• 🌦️ **Live Weather** — Real-time weather + 5-day forecast with farming advice\n"
+            "• 📊 **Farm Simulation** — Run what-if scenarios to test farming decisions virtually\n"
+            "• 📄 **PDF Reports** — Download personalised farm reports in Tamil or English\n"
+            "• 🗣️ **Bilingual Chatbot** — Full Tamil & English support with voice input/output\n"
+            "• 📱 **Mobile Ready** — Works on both web browser and mobile devices"
+        ),
+        'ta': (
+            "✨ **AgriNova முக்கிய அம்சங்கள்:**\n"
+            "• 🤖 **ML மதிப்பெண்** — Random Forest + K-Means மூலம் தொழில்நுட்ப தத்தெடுப்பு மதிப்பெண்\n"
+            "• 🌾 **பயிர் பரிந்துரைகள்** — உங்கள் சுயவிவரத்தின் அடிப்படையில் லாபகரமான பயிர்கள்\n"
+            "• 🏛️ **திட்ட பொருத்தம்** — தகுதியான அரசு திட்டங்களை தானாகக் கண்டுபிடித்தல்\n"
+            "• 🌦️ **நேரடி வானிலை** — நடப்பு வானிலை + 5 நாள் முன்னறிவிப்பு மற்றும் விவசாய ஆலோசனை\n"
+            "• 📊 **Farm Simulation** — மெய்நிகர் சோதனைகள் மூலம் விவசாய முடிவுகளை சோதிக்கலாம்\n"
+            "• 📄 **PDF அறிக்கைகள்** — தமிழ் அல்லது ஆங்கிலத்தில் தனிப்பட்ட அறிக்கை பதிவிறக்கம்\n"
+            "• 🗣️ **இரு மொழி சாட்போட்** — குரல் உள்ளீடு/வெளியீட்டுடன் தமிழ் & ஆங்கில ஆதரவு\n"
+            "• 📱 **மொபைல் ஆதரவு** — வலைத்தளம் மற்றும் மொபைல் இரண்டிலும் இயங்கும்"
+        ),
+    },
     # --- greet ---
     'hello': {
         'en': (
@@ -824,8 +997,21 @@ KEYWORD_MAP = [
     (['fpo', 'producer organization', 'cooperative', 'உற்பத்தி நிறுவனம்', 'கூட்டுறவு'], 'fpo_cooperative'),
     (['tractor', 'driving', 'machinery training', 'டிராக்டர்', 'ஓட்டுநர்'], 'tractor_training'),
 
-    (['agrinova', 'how it works', 'app', 'application', 'features', 'எப்படி இயங்குகிறது', 'செயலி'], 'agrinova_working'),
-    (['simulation', 'predict', 'score', 'model', 'ml', 'machine learning', 'உருவகப்படுத்துதல்', 'கணிப்பு', 'மதிப்பெண்'], 'simulation_prediction'),
+    # live weather keywords — must come BEFORE generic 'weather'
+    (['today weather', 'current weather', 'weather today', 'climate today', "today's weather",
+      'temperature today', 'temperature now', 'rain today', 'will it rain', 'weather now',
+      'how is the weather', 'what is the weather', 'இன்று வானிலை', 'தற்போதைய வானிலை',
+      'இன்றைய தட்பவெப்பம்', 'மழை பெய்யுமா', 'forecast'], 'live_weather'),
+
+    (['simulation benefit', 'benefits of simulation', 'why simulation', 'how simulation helps',
+      'advantage', 'why use', 'சிமுலேஷன் நன்மை', 'உருவகப்படுத்துதல் நன்மை'], 'simulation_benefits'),
+    (['how to use', 'how do i use', 'steps to', 'guide', 'tutorial', 'எப்படி பயன்படுத்துவது',
+      'படிகள்', 'வழிகாட்டி'], 'simulation_how_to_use'),
+    (['agrinova features', 'features of', 'what does agrinova', 'app features',
+      'அம்சங்கள்', 'செயல்பாடுகள்'], 'agrinova_features'),
+    (['agrinova', 'how it works', 'app', 'application', 'எப்படி இயங்குகிறது', 'செயலி'], 'agrinova_working'),
+    (['simulation', 'predict', 'score', 'model', 'ml', 'machine learning', 'adoption',
+      'உருவகப்படுத்துதல்', 'கணிப்பு', 'மதிப்பெண்'], 'simulation_prediction'),
 
     (['crop', 'crops', 'grow', 'plant', 'paddy', 'rice', 'millet', 'vegetable', 'pulse',
       'பயிர்', 'நெல்', 'தினை', 'காய்கறி'], 'crop'),
@@ -880,6 +1066,45 @@ def chat():
             return jsonify({'error': 'Message cannot be empty'}), 400
 
         intent = match_intent(user_message)
+
+        # ── Live weather: fetch real data and return immediately ──────────────
+        if intent == 'live_weather':
+            farmer_data = FarmerData.get_by_user_id(session['user_id']) if 'user_id' in session else None
+            city = 'Chennai'  # default
+            if farmer_data and farmer_data.get('Location_District'):
+                city = farmer_data.get('Location_District')
+
+            weather = fetch_weather_data(city)
+            if weather:
+                curr = weather['current']
+                reply_en = (
+                    f"{curr['icon']} **Current Weather in {weather['city']}**\n"
+                    f"🌡️ {curr['temp']}°C (Feels like {curr['feels_like']}°C)\n"
+                    f"🌥️ {curr['description']}\n"
+                    f"💧 Humidity: {curr['humidity']}% | 💨 Wind: {curr['wind_speed']} km/h\n\n"
+                    f"🌾 **Farming Tip:** {weather['farming_tip']}"
+                )
+                reply_ta = (
+                    f"{curr['icon']} **{weather['city']}-ல் இன்றைய வானிலை**\n"
+                    f"🌡️ {curr['temp']}°C (உணரப்படும் வெப்பம் {curr['feels_like']}°C)\n"
+                    f"🌥️ {curr['description']}\n"
+                    f"💧 ஈரப்பதம்: {curr['humidity']}% | 💨 காற்று: {curr['wind_speed']} கி.மீ/மணி\n\n"
+                    f"🌾 **விவசாய குறிப்பு:** {weather['farming_tip']}"
+                )
+                return jsonify({
+                    'reply_en': reply_en,
+                    'reply_ta': reply_ta,
+                    'intent': 'live_weather',
+                    'weather_data': weather,
+                }), 200
+            else:
+                return jsonify({
+                    'reply_en': f'❌ Could not fetch weather for **{city}**. Please check your internet connection or update your district in the Farmer Form.',
+                    'reply_ta': f'❌ **{city}**-ன் வானிலை தரவு கிடைக்கவில்லை. இணைய இணைப்பை சரிபார்க்கவும்.',
+                    'intent': 'live_weather',
+                }), 200
+        # ─────────────────────────────────────────────────────────────────────
+
         response_obj = RESPONSES.get(intent, RESPONSES['default'])
 
         # Attempt to use Groq LLM explicitly if we have the key
@@ -978,3 +1203,20 @@ def chat():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
+# ── Dedicated weather endpoint ───────────────────────────────────────────────
+@chatbot_bp.route('/weather', methods=['GET'])
+@require_login
+def get_weather():
+    """Return current weather + 5-day forecast for a given city."""
+    city = request.args.get('city', '').strip()
+    if not city:
+        # Auto-detect from farmer profile
+        farmer_data = FarmerData.get_by_user_id(session['user_id']) if 'user_id' in session else None
+        city = (farmer_data or {}).get('Location_District', 'Chennai')
+
+    data = fetch_weather_data(city)
+    if data:
+        return jsonify(data), 200
+    return jsonify({'error': f'Could not fetch weather for {city}'}), 503

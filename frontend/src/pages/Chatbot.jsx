@@ -1,7 +1,99 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { chatbotAPI } from '../utils/api';
 import { useLanguage } from '../context/LanguageContext';
-import { FaComments, FaTimes, FaPaperPlane, FaRobot, FaMicrophone, FaMicrophoneSlash, FaVolumeUp, FaStop } from 'react-icons/fa';
+import { FaComments, FaTimes, FaPaperPlane, FaRobot, FaMicrophone, FaMicrophoneSlash, FaVolumeUp, FaStop, FaCloudSun } from 'react-icons/fa';
+
+// ── Weather Card Component ─────────────────────────────────────────────────────
+const getWeatherBg = (cond) => {
+    if (!cond) return 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)';
+    const c = cond.toLowerCase();
+    if (c.includes('thunder')) return 'linear-gradient(135deg, #2c3e50, #4a0072)';
+    if (c.includes('rain') || c.includes('drizzle')) return 'linear-gradient(135deg, #1d3557, #457b9d)';
+    if (c.includes('snow')) return 'linear-gradient(135deg, #a8edea, #fed6e3)';
+    if (c.includes('fog') || c.includes('mist') || c.includes('haze')) return 'linear-gradient(135deg, #bdc3c7, #2c3e50)';
+    if (c.includes('clear')) return 'linear-gradient(135deg, #f7971e, #ffd200)';
+    if (c.includes('cloud')) return 'linear-gradient(135deg, #4facfe, #78a9c8)';
+    return 'linear-gradient(135deg, #56ccf2, #2f80ed)';
+};
+
+const WeatherCard = ({ data, language }) => {
+    if (!data) return null;
+    const { city, current, forecast, farming_tip } = data;
+    const bg = getWeatherBg(current.condition);
+    return (
+        <div style={{
+            borderRadius: '14px', overflow: 'hidden',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+            fontFamily: 'inherit', marginTop: '4px',
+        }}>
+            {/* Current weather header */}
+            <div style={{
+                background: bg, padding: '16px',
+                color: '#fff', textAlign: 'center',
+            }}>
+                <div style={{ fontSize: '11px', opacity: 0.85, textTransform: 'uppercase', letterSpacing: '1px' }}>
+                    {language === 'ta' ? 'தற்போதைய வானிலை' : 'Current Weather'} — {city}
+                </div>
+                <div style={{ fontSize: '48px', margin: '6px 0 2px' }}>{current.icon}</div>
+                <div style={{ fontSize: '36px', fontWeight: 800, lineHeight: 1 }}>{current.temp}&deg;C</div>
+                <div style={{ fontSize: '13px', opacity: 0.9, marginTop: '4px' }}>{current.description}</div>
+                <div style={{
+                    display: 'flex', justifyContent: 'center', gap: '18px',
+                    marginTop: '10px', fontSize: '12px', opacity: 0.88,
+                }}>
+                    <span>💧 {language === 'ta' ? 'ஈரப்ப' : 'Humidity'}: {current.humidity}%</span>
+                    <span>💨 {language === 'ta' ? 'காற்று' : 'Wind'}: {current.wind_speed} km/h</span>
+                    <span>🌡️ {language === 'ta' ? 'உணர்வு' : 'Feels'}: {current.feels_like}&deg;</span>
+                </div>
+            </div>
+
+            {/* 5-day forecast strip */}
+            {forecast && forecast.length > 0 && (
+                <div style={{
+                    background: 'rgba(255,255,255,0.97)',
+                    padding: '10px 8px 8px',
+                    borderTop: '1px solid rgba(0,0,0,0.06)',
+                }}>
+                    <div style={{
+                        fontSize: '10px', fontWeight: 700, color: '#6b7280',
+                        textTransform: 'uppercase', letterSpacing: '0.8px',
+                        marginBottom: '8px', paddingLeft: '4px',
+                    }}>
+                        {language === 'ta' ? '5-நாள் முன்னறிவிப்பு' : '5-Day Forecast'}
+                    </div>
+                    <div style={{ display: 'flex', gap: '4px' }}>
+                        {forecast.map((day, i) => (
+                            <div key={i} style={{
+                                flex: 1, textAlign: 'center', padding: '8px 4px',
+                                borderRadius: '10px',
+                                background: i === 0 ? 'linear-gradient(135deg,#e0f2fe,#bae6fd)' : '#f9fafb',
+                                border: i === 0 ? '1px solid #7dd3fc' : '1px solid #f3f4f6',
+                            }}>
+                                <div style={{ fontSize: '10px', fontWeight: 600, color: '#374151' }}>
+                                    {day.day.slice(0, 3)}
+                                </div>
+                                <div style={{ fontSize: '18px', margin: '3px 0' }}>{day.icon}</div>
+                                <div style={{ fontSize: '11px', fontWeight: 700, color: '#111' }}>{day.temp_max}&deg;</div>
+                                <div style={{ fontSize: '10px', color: '#9ca3af' }}>{day.temp_min}&deg;</div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {/* Farming tip */}
+            {farming_tip && (
+                <div style={{
+                    background: '#f0fdf4', padding: '10px 14px',
+                    borderTop: '1px solid #d1fae5',
+                    fontSize: '12px', color: '#166534', lineHeight: 1.5,
+                }}>
+                    {farming_tip}
+                </div>
+            )}
+        </div>
+    );
+};
 
 const Chatbot = ({ user }) => {
     const { language } = useLanguage();
@@ -78,8 +170,9 @@ const Chatbot = ({ user }) => {
         if (isOpen) inputRef.current?.focus();
     }, [isOpen]);
 
-    const handleSend = async () => {
-        const trimmed = inputValue.trim();
+    const handleSend = async (overrideText) => {
+        // Guard: if overrideText is not a plain string (e.g. a click event), ignore it
+        const trimmed = (typeof overrideText === 'string' ? overrideText : inputValue).trim();
         if (!trimmed || isTyping) return;
 
         const userMsg = { role: 'user', text: trimmed };
@@ -93,7 +186,9 @@ const Chatbot = ({ user }) => {
                 const botMsg = {
                     role: 'bot',
                     reply_en: res.data.reply_en,
-                    reply_ta: res.data.reply_ta
+                    reply_ta: res.data.reply_ta,
+                    intent: res.data.intent,
+                    weather_data: res.data.weather_data || null,
                 };
                 setMessages(prev => [...prev, botMsg]);
                 setIsTyping(false);
@@ -103,7 +198,9 @@ const Chatbot = ({ user }) => {
                 setMessages(prev => [...prev, {
                     role: 'bot',
                     reply_en: '❌ Sorry, something went wrong. Please try again.',
-                    reply_ta: '❌ மன்னிக்கவும், ஏதோ தவறு நடந்தது. மீண்டும் முயற்சிக்கவும்.'
+                    reply_ta: '❌ மன்னிக்கவும், ஏதோ தவறு நடந்தது. மீண்டும் முயற்சிக்கவும்.',
+                    intent: 'error',
+                    weather_data: null,
                 }]);
                 setIsTyping(false);
             }, 400);
@@ -287,8 +384,13 @@ const Chatbot = ({ user }) => {
                                     wordBreak: 'break-word',
                                     position: 'relative'
                                 }}>
-                                    {/* Render translated text dynamically based on current language */}
-                                    {msg.role === 'user' ? msg.text : (language === 'en' ? msg.reply_en : msg.reply_ta)}
+                                {/* Render translated text dynamically based on current language */}
+                                    {msg.role === 'user'
+                                        ? msg.text
+                                        : msg.intent === 'live_weather' && msg.weather_data
+                                            ? <WeatherCard data={msg.weather_data} language={language} />
+                                            : (language === 'en' ? msg.reply_en : msg.reply_ta)
+                                    }
 
                                     {/* Small speaker icon for manual playback of bot messages */}
                                     {msg.role === 'bot' && (
@@ -398,7 +500,7 @@ const Chatbot = ({ user }) => {
                                             const text = e.results[0][0].transcript;
                                             setInputValue(text);
                                             setIsListening(false);
-                                            handleSend(); // Auto-send when voice is decoded
+                                            handleSend(text); // Auto-send when voice is decoded
                                         };
                                         recognition.onerror = () => setIsListening(false);
                                         recognition.onend = () => setIsListening(false);
