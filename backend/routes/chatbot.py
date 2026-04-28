@@ -6,7 +6,8 @@ from groq import Groq
 from dotenv import load_dotenv
 from datetime import datetime
 
-load_dotenv()
+env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env')
+load_dotenv(dotenv_path=env_path)
 
 # Configure Groq
 groq_api_key = os.getenv("GROQ_API_KEY")

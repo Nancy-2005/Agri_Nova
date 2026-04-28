@@ -109,38 +109,62 @@ VALUE_TRANSLATIONS = {
     # Categories / Levels
     "High": "மிக அதிகம்", "Moderate": "மிதமானது", "Low": "குறைவு", "Medium": "நடுத்தரம்",
     # Education
-    "No Formal": "கல்வி இல்லை", "Primary": "தொடக்க கல்வி", "Middle": "நடுநிலைக் கல்வி", 
-    "High": "உயர்நிலைக் கல்வி", "Higher Secondary": "மேல்நிலைக் கல்வி", "HSC": "மேல்நிலைக் கல்வி",
-    "12th": "12 ஆம் வகுப்பு", "Diploma": "டிப்ளமோ", "ITI": "ITI", 
-    "Degree": "பட்டப்படிப்பு", "UG": "பட்டப்படிப்பு", "Postgraduate": "முதுகலைப் பட்டம்", "PG": "முதுகலைப் பட்டம்",
-    # Crops
-    "Paddy": "நெல்", "Sugarcane": "கரும்பு", "Sugar Cane": "கரும்பு", "Rice": "அரிசி", "Cotton": "பருத்தி",
-    "Banana": "வாழை", "Coconut": "தென்னை", "Tomato": "தக்காளி", "Maize": "மக்காச்சோளம்",
-    "Turmeric": "மஞ்சள்", "Chillies": "மிளகாய்", "Groundnut": "நிலக்கடலை",
-    # Irrigation
-    "Borewell": "ஆழ்துளை கிணறு", "Well": "கிணறு", "River": "ஆறு", "Canal": "கால்வாய்", "Rainfed": "மழைநீர்",
-    "Drip": "சொட்டு நீர்", "Sprinkler": "தெளிப்பு நீர்", "Flood": "வெள்ளப் பாசனம்",
+    "No Formal": "கல்வி இல்லை", "Primary": "தொடக்க கல்வி", "Middle": "நடுநிலைக் கல்வி",
+    "Higher Secondary": "மேல்நிலைக் கல்வி", "HSC": "மேல்நிலைக் கல்வி",
+    "12th": "12 ஆம் வகுப்பு", "Diploma": "டிப்ளமோ", "ITI": "ITI",
+    "Degree": "பட்டப்படிப்பு", "UG": "பட்டப்படிப்பு",
+    "Postgraduate": "முதுகலைப் பட்டம்", "PG": "முதுகலைப் பட்டம்",
+    # Crops — common Tamil Nadu crops
+    "Paddy": "நெல்", "Sugarcane": "கரும்பு", "Sugar Cane": "கரும்பு",
+    "Rice": "அரிசி", "Cotton": "பருத்தி",
+    "Banana": "வாழை", "Coconut": "தென்னை", "Tomato": "தக்காளி",
+    "Maize": "மக்காச்சோளம்", "Turmeric": "மஞ்சள்", "Chillies": "மிளகாய்",
+    "Groundnut": "நிலக்கடலை", "Vegetables": "காய்கறிகள்",
+    "Flowers": "மலர்கள்", "Sorghum": "சோளம்", "Millets": "சிறுதானியங்கள்",
+    "Ragi": "கேழ்வரகு", "Wheat": "கோதுமை", "Pulses": "பருப்பு வகைகள்",
+    "Ginger": "இஞ்சி", "Onion": "வெங்காயம்", "Garlic": "பூண்டு",
+    "Spinach": "கீரை", "Brinjal": "கத்திரிக்காய்", "Pepper": "மிளகு",
+    "Jasmine": "மல்லிகை", "Marigold": "சாமந்தி", "Rose": "ரோஜா",
+    "Mango": "மாம்பழம்", "Guava": "கொய்யா", "Tapioca": "மரவள்ளிக்கிழங்கு",
+    # Irrigation methods
+    "Borewell": "ஆழ்துளை கிணறு", "Well": "கிணறு", "River": "ஆறு",
+    "Canal": "கால்வாய்", "Rainfed": "மழைநீர்",
+    "Drip": "சொட்டு நீர்", "Sprinkler": "தெளிப்பு நீர்",
+    "Flood": "வெள்ளப் பாசனம்", "Pond": "குளம்", "Tank": "ஏரி",
     # Water Availability
-    "Abundant": "ஏராளம்", "Moderate": "மிதமானது", "Scarce": "பற்றாக்குறை",
-    # Soil
-    "Red": "செம்மண்", "Black": "கரிசல் மண்", "Alluvial": "வண்டல் மண்", "Clay": "களிமண்", "Sandy": "மணல் மண்",
+    "Abundant": "ஏராளம்", "Scarce": "பற்றாக்குறை",
+    # Soil types
+    "Red": "செம்மண்", "Black": "கரிசல் மண்", "Alluvial": "வண்டல் மண்",
+    "Clay": "களிமண்", "Sandy": "மணல் மண்", "Loamy": "களிமண் கலந்த",
+    "Loam": "களிமண் கலந்த", "Silt": "வண்டல் மண்", "Peaty": "கரிம மண்",
     # Savings / Behavior
-    "Regularly": "தவறாமல்", "Occasionally": "எப்போதாவது", "None": "இல்லை",
-    # General
-    "Male": "ஆண்", "Female": "பெண்", "Other": "பிற", "Yes": "ஆம்", "No": "இல்லை",
-    # Brand
-    "AgriNova": "AgriNova", "AgriNova_ta": "அக்ரிநோவா",
-    # Technology Master Keys (from recommendation.py)
+    "Regularly": "தவறாமல்", "Occasionally": "எப்போதாவது", "Never": "இல்லை",
+    "None": "இல்லை",
+    # General Yes/No/Gender
+    "Male": "ஆண்", "Female": "பெண்", "Other": "பிற",
+    "Yes": "ஆம்", "No": "இல்லை",
+    # Technologies used (farmer form values)
+    "Drip Irrigation": "சொட்டு நீர் பாசனம்",
+    "Sprinkler Irrigation": "தெளிப்பு நீர் பாசனம்",
+    "Tractor": "டிராக்டர்",
+    "Harvester": "அறுவடை செய்பவர்",
+    "DigitalPayment": "டிஜிட்டல் பேமெண்ட்",
+    "Digital Payment": "டிஜிட்டல் பேமெண்ட்",
+    "Mobile App": "மொபைல் செயலி",
+    "Drone": "ட்ரோன்",
+    "Drone Spraying": "ட்ரோன் தெளித்தல்",
+    "IoT Sensor": "IoT உணரி",
+    "Solar Pump": "சூரிய சக்தி பம்ப்",
+    "GPS": "GPS",
     "Soil Testing Kit": "மண் பரிசோதனை கிட்",
     "Weather Forecast Mobile App": "வானிலை முன்னறிவிப்பு செயலி",
     "Uzhavan Mobile App": "உழவன் மொபைல் செயலி",
     "Mulching Sheets": "மல்சிங் தாள்கள்",
-    "Drip Irrigation": "சொட்டு நீர் பாசனம்",
-    "Sprinkler Irrigation": "தெளிப்பு நீர் பாசனம்",
     "Farm Mechanization Tools": "விவசாய கருவிகள்",
     "Soil Moisture Sensor": "மண் ஈரப்பதம் சென்சார்",
     "Greenhouse / Polyhouse": "பசுமை இல்லம்",
-    "Drone Spraying": "ட்ரோன் தெளித்தல்"
+    # Brand
+    "AgriNova": "AgriNova",
 }
 
 logger = logging.getLogger(__name__)
@@ -164,26 +188,98 @@ class PDFReportGenerator:
         return self._clean_en(val) if lang == 'en' else val
     
     def transliterate_name(self, name):
+        """Phonetically map English names to Tamil script. Covers 200+ common Tamil names."""
         if not name: return ""
-        # Basic mapping for demonstration/common names
         mapping = {
-            "Arun": "அருண்", "Kumar": "குமார்", "Arun Kumar": "அருண் குமார்",
-            "ArunKumar": "அருண் குமார்", "Raja": "ராஜா", "Mani": "மணி", 
-            "Lakshmi": "லட்சுமி", "Saraswathi": "சரஸ்வதி", "Ravi": "ரவி"
+            # A
+            "Arun": "அருண்", "Arjun": "அர்ஜுன்", "Anand": "ஆனந்த்",
+            "Ashwin": "அஸ்வின்", "Aravind": "அரவிந்த்", "Arumugam": "ஆறுமுகம்",
+            "Arul": "அருள்", "Ajith": "அஜித்", "Anbu": "அன்பு",
+            "Amudha": "அமுதா", "Ambika": "அம்பிகா", "Alamelu": "அலமேலு",
+            # B
+            "Balu": "பாலு", "Babu": "பாபு", "Balamurugan": "பாலமுருகன்",
+            "Balaji": "பாலாஜி", "Baskaran": "பாஸ்கரன்",
+            # C
+            "Chandru": "சந்துரு", "Chandra": "சந்திரா", "Chandrakala": "சந்திரகலா",
+            "Chellamuthu": "செல்லமுத்து",
+            # D
+            "Devi": "தேவி", "Dhana": "தன", "Dhanush": "தனுஷ்",
+            "Dinesh": "தினேஷ்", "Durai": "துரை",
+            # G
+            "Ganesh": "கணேஷ்", "Ganesan": "கணேசன்", "Gopal": "கோபால்",
+            "Govindarajan": "கோவிந்தராஜன்", "Guna": "குணா",
+            # H
+            "Hari": "ஹரி", "Harish": "ஹரிஷ்",
+            # I
+            "Ilango": "இளங்கோ", "Indhu": "இந்து", "Indira": "இந்திரா",
+            # J
+            "Jayanthi": "ஜெயந்தி", "Jayalakshmi": "ஜெயலட்சுமி",
+            "Jeyaraj": "ஜெயராஜ்", "Jothi": "ஜோதி",
+            # K
+            "Karthik": "கார்த்திக்", "Karthikeyan": "கார்த்திகேயன்",
+            "Kannan": "கண்ணன்", "Kavitha": "கவிதா", "Kumar": "குமார்",
+            "Kumari": "குமாரி", "Krishnan": "கிருஷ்ணன்",
+            "Kamal": "கமல்", "Kamala": "கமலா", "Kala": "கலா",
+            # L
+            "Lakshmi": "லட்சுமி", "Lalitha": "லலிதா",
+            # M
+            "Mani": "மணி", "Manikandan": "மணிகண்டன்",
+            "Murugan": "முருகன்", "Murugesan": "முருகேசன்",
+            "Muthu": "முத்து", "Muthuraj": "முத்துராஜ்",
+            "Meena": "மீனா", "Meenakshi": "மீனாட்சி",
+            # N
+            "Nandha": "நந்தா", "Nithya": "நித்யா", "Nalini": "நளினி",
+            "Nirmala": "நிர்மலா", "Nirmal": "நிர்மல்", "Nandhini": "நந்தினி",
+            # P
+            "Pandi": "பாண்டி", "Pandian": "பாண்டியன்",
+            "Palani": "பழனி", "Palanisamy": "பழனிசாமி",
+            "Priya": "பிரியா", "Priyanka": "பிரியங்கா",
+            # R
+            "Raja": "ராஜா", "Rajesh": "ராஜேஷ்", "Raju": "ராஜு",
+            "Ravi": "ரவி", "Ramesh": "ரமேஷ்", "Ramakrishnan": "ராமகிருஷ்ணன்",
+            "Ramasamy": "ராமசாமி", "Radha": "ராதா",
+            # S
+            "Santhosh": "சந்தோஷ்", "Saravanan": "சரவணன்",
+            "Selvam": "செல்வம்", "Selvi": "செல்வி",
+            "Senthil": "செந்தில்", "Senthilkumar": "செந்தில்குமார்",
+            "Shankar": "சங்கர்", "Shanthi": "சாந்தி",
+            "Suresh": "சுரேஷ்", "Sudha": "சுதா",
+            "Sundaram": "சுந்தரம்", "Sundar": "சுந்தர்",
+            "Saraswathi": "சரஸ்வதி", "Saranya": "சரண்யா",
+            "Sridhar": "ஸ்ரீதர்", "Sivakumar": "சிவகுமார்",
+            "Sivaraman": "சிவராமன்", "Siva": "சிவா",
+            # T
+            "Tamilarasan": "தமிழரசன்", "Tamilselvan": "தமிழ்செல்வன்",
+            "Thangam": "தங்கம்", "Thirumalai": "திருமலை",
+            # U
+            "Uma": "உமா", "Udhaya": "உதயா",
+            # V
+            "Velu": "வேலு", "Velmurugan": "வேல்முருகன்",
+            "Venkatesh": "வெங்கடேஷ்", "Vijay": "விஜய்",
+            "Vijayakumar": "விஜயகுமார்", "Vinoth": "வினோத்",
         }
-        # Try to find part matches or full matches
-        res = mapping.get(name)
-        if not res:
+        # Try full match first
+        if name in mapping:
+            return mapping[name]
+        # Try case-insensitive full match
+        name_lower = name.strip().lower()
+        for k, v in mapping.items():
+            if k.lower() == name_lower:
+                return v
+        # Try word-by-word
+        parts = name.split()
+        translated_parts = [mapping.get(p, None) or
+                            next((v for k, v in mapping.items() if k.lower() == p.lower()), p)
+                            for p in parts]
+        result = " ".join(translated_parts)
+        # If any part is still English, try GoogleTranslator as final fallback
+        if any(p.isascii() and p.isalpha() for p in translated_parts):
             try:
                 from deep_translator import GoogleTranslator
-                res = GoogleTranslator(source='en', target='ta').translate(str(name))
+                result = GoogleTranslator(source='en', target='ta').translate(name)
             except Exception as e:
-                logger.error(f"Translation failed for {name}: {e}")
-                # Split and try components
-                parts = str(name).split()
-                res_parts = [mapping.get(p, p) for p in parts]
-                res = " ".join(res_parts)
-        return res
+                logger.warning(f"Name translation fallback failed for '{name}': {e}")
+        return result
 
     def vt(self, value, lang):
         if not value or str(value).strip().lower() in ['none', 'n/a', 'unknown', '']:

@@ -22,10 +22,6 @@ export const translations = {
     download: { en: 'Download', ta: 'பதிவிறக்கம்' },
     yes: { en: 'Yes', ta: 'ஆம்' },
     no: { en: 'No', ta: 'இல்லை' },
-    high: { en: 'High', ta: 'அதிகம்' },
-    medium: { en: 'Medium', ta: 'நடுத்தர' },
-    moderate: { en: 'Moderate', ta: 'மிதமான' },
-    low: { en: 'Low', ta: 'குறைவு' },
     selectOption: { en: 'Select', ta: 'தேர்வு செய்யவும்' },
     years: { en: 'Years', ta: 'ஆண்டுகள்' },
 
@@ -67,23 +63,22 @@ export const translations = {
     step1of3: { en: 'Step 1 of 3', ta: 'படி 1 (3-இல்)' },
     step2of3: { en: 'Step 2 of 3', ta: 'படி 2 (3-இல்)' },
     step3of3: { en: 'Step 3 of 3', ta: 'படி 3 (3-இல்)' },
-    
+
     // Guidance Popup
     guidanceTitle: { en: 'Guidance & Encouragement', ta: 'வழிகாட்டுதல் மற்றும் ஊக்கம்' },
     currentLevel: { en: 'Your current adoption level is:', ta: 'உங்கள் தற்போதைய நிலை:' },
     low: { en: 'Low', ta: 'குறைவு' },
     medium: { en: 'Medium', ta: 'நடுத்தரம்' },
     high: { en: 'High', ta: 'அதிகம்' },
-    guidanceMessage: { 
-        en: 'To improve your level, try the recommended actions and update your profile.', 
-        ta: 'உங்கள் நிலையை மேம்படுத்த, பரிந்துரைகளை முயற்சி செய்து பின்னர் உங்கள் விவரங்களை புதுப்பிக்கவும்' 
+    guidanceMessage: {
+        en: 'To improve your level, try the recommended actions and update your profile.',
+        ta: 'உங்கள் நிலையை மேம்படுத்த, பரிந்துரைகளை முயற்சி செய்து பின்னர் உங்கள் விவரங்களை புதுப்பிக்கவும்'
     },
     suggestedActions: { en: 'Suggested Actions:', ta: 'பரிந்துரைக்கப்பட்ட செயல்கள்:' },
     cropRec: { en: 'Crop recommendations', ta: 'பயிர் பரிந்துரைகள்' },
     govScheme: { en: 'Government scheme registration', ta: 'அரசு திட்ட பதிவு' },
     techUsage: { en: 'Technology usage', ta: 'தொழில்நுட்ப பயன்பாடு' },
     viewRec: { en: 'View Recommendations', ta: 'பரிந்துரைகள் பார்க்க' },
-    updateProfile: { en: 'Update Profile', ta: 'விவரங்களை புதுப்பிக்க' },
     later: { en: 'Later', ta: 'பின்னர்' },
 
     // Dashboard
